@@ -6,7 +6,14 @@ top to bottom direction
 
 !include <C4/C4>
 !include <C4/C4_Context>
+!include <C4/C4_Component>
 
+Container_Boundary("ParkingApplication.ParkingApplication_boundary", "ParkingApplication", $tags="") {
+  Component(ParkingApplication.ParkingApplication.Reservation, "Reservation", $techn="Module", $descr="", $tags="", $link="")
+  Component(ParkingApplication.ParkingApplication.ZoneManagement, "Zone Management", $techn="Module", $descr="", $tags="", $link="")
+}
+
+Rel(ParkingApplication.ParkingApplication.ZoneManagement, ParkingApplication.ParkingApplication.Reservation, "listens to", $techn="", $tags="", $link="")
 
 SHOW_LEGEND(true)
 @enduml

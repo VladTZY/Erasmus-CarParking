@@ -1,1 +1,1 @@
-[]
+[{"name":"com.parking.zonemgmt.internal.IParkingZoneRepo","comment":"Internal repository contract for ParkingZone and ParkingSpace aggregates. Only used within the Zone Management module — other modules depend on IZoneAvailability."},{"name":"com.parking.zonemgmt.internal.ParkingZoneRepo","comment":"JPA-backed implementation of {@link IParkingZoneRepo}. Package-private — callers outside this module use the interface."}]
