@@ -2,9 +2,11 @@ package com.parking;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.modulith.Modulithic;
 
-@SpringBootApplication
+// Suppress "generated security password" warning — JWT auth is used instead
+@SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
 @Modulithic
 public class ParkingApplication {
 

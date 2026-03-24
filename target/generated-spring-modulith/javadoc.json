@@ -1,1 +1,1 @@
-[{"name":"com.parking.SecurityConfig","comment":"Minimal security configuration for the skeleton phase.  <p>All requests are permitted so the H2 console and any smoke endpoints are reachable during local development. This will be replaced by a JWT-based configuration in Phase 2."}]
+[]
