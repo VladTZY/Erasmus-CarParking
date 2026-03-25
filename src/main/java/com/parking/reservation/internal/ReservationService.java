@@ -37,7 +37,7 @@ class ReservationService {
     @Transactional(readOnly = true)
     ReservationEstimateDTO getEstimate(UUID spaceId, LocalDateTime startTime, LocalDateTime endTime) {
         validateTimeRange(startTime, endTime);
-        if (!zoneAvailability.isSpaceAvailable(spaceId)) {
+        if (repo.hasOverlap(spaceId, startTime, endTime)) {
             throw new SpaceNotAvailableException(spaceId);
         }
         int durationMinutes = (int) ChronoUnit.MINUTES.between(startTime, endTime);
@@ -50,7 +50,7 @@ class ReservationService {
     ReservationDTO createReservation(UUID spaceId, UUID citizenId, LocalDateTime startTime,
                                      LocalDateTime endTime, boolean withCharging) {
         validateTimeRange(startTime, endTime);
-        if (!zoneAvailability.isSpaceAvailable(spaceId)) {
+        if (repo.hasOverlap(spaceId, startTime, endTime)) {
             throw new SpaceNotAvailableException(spaceId);
         }
         int durationMinutes = (int) ChronoUnit.MINUTES.between(startTime, endTime);
@@ -62,14 +62,18 @@ class ReservationService {
         );
         reservation = repo.save(reservation);
 
-        spaceStateManager.markReserved(spaceId);
-
         eventPublisher.publishEvent(new ReservationCreatedEvent(
                 reservation.getId(), spaceId, citizenId,
                 estimate.estimatedFee(), durationMinutes, withCharging
         ));
 
         return toDTO(reservation);
+    }
+
+    /** Returns all non-cancelled reservations for a space (for schedule display). */
+    @Transactional(readOnly = true)
+    List<ReservationDTO> getSchedule(UUID spaceId) {
+        return repo.findScheduleBySpaceId(spaceId);
     }
 
     @Transactional
@@ -106,11 +110,13 @@ class ReservationService {
         return repo.findEntitiesByCitizenId(citizenId).stream().map(this::toDTO).toList();
     }
 
+    /** Returns space IDs in the zone that have no overlapping reservations in [startTime, endTime]. */
     @Transactional(readOnly = true)
     List<ReservationEstimateDTO> searchAvailable(UUID zoneId, LocalDateTime startTime, LocalDateTime endTime) {
         validateTimeRange(startTime, endTime);
         int durationMinutes = (int) ChronoUnit.MINUTES.between(startTime, endTime);
-        return zoneAvailability.findAvailableSpaces(zoneId).stream()
+        return zoneAvailability.findAllSpaceIds(zoneId).stream()
+                .filter(spaceId -> !repo.hasOverlap(spaceId, startTime, endTime))
                 .map(spaceId -> {
                     var estimate = pricingPolicy.estimate(spaceId, durationMinutes);
                     return new ReservationEstimateDTO(spaceId, startTime, endTime, durationMinutes,

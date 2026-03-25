@@ -46,6 +46,11 @@ class ReservationController {
         return reservationService.getById(id);
     }
 
+    @GetMapping("/reservations/space/{spaceId}")
+    List<ReservationDTO> getSchedule(@PathVariable UUID spaceId) {
+        return reservationService.getSchedule(spaceId);
+    }
+
     @GetMapping("/reservations/my")
     List<ReservationDTO> getMy(Authentication auth) {
         UUID citizenId = (UUID) auth.getPrincipal();

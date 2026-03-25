@@ -47,6 +47,7 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/pricing/internal/PricingRuleJpaRepo.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/pricing/internal/PricingRuleService.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/pricing/package-info.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/IReservationAvailability.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/IReservationRepo.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/ReservationCancelledEvent.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/ReservationCreatedEvent.java

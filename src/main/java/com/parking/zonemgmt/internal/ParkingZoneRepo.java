@@ -39,6 +39,11 @@ class ParkingZoneRepo implements IParkingZoneRepo {
     }
 
     @Override
+    public List<ParkingSpace> findAllSpaces() {
+        return spaceJpa.findAll();
+    }
+
+    @Override
     public List<ParkingSpace> findSpacesByZoneId(UUID zoneId) {
         return spaceJpa.findByZoneId(zoneId);
     }

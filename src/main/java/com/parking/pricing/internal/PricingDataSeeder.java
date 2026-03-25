@@ -42,27 +42,39 @@ class PricingDataSeeder implements CommandLineRunner {
         }
 
         List<ParkingZoneDTO> zones = zoneQuery.findAllZones();
-        var zoneA = zones.stream().filter(z -> z.name().equals("City Centre")).findFirst()
-                .orElseThrow(() -> new IllegalStateException("Zone A not found — run ZoneDataSeeder first"));
-        var zoneB = zones.stream().filter(z -> z.name().equals("Train Station")).findFirst()
-                .orElseThrow(() -> new IllegalStateException("Zone B not found — run ZoneDataSeeder first"));
+        var westenhellweg = zones.stream().filter(z -> z.name().equals("Westenhellweg")).findFirst()
+                .orElseThrow(() -> new IllegalStateException("Westenhellweg zone not found — run ZoneDataSeeder first"));
+        var hauptbahnhof = zones.stream().filter(z -> z.name().equals("Hauptbahnhof")).findFirst()
+                .orElseThrow(() -> new IllegalStateException("Hauptbahnhof zone not found — run ZoneDataSeeder first"));
+        var westfalenhallen = zones.stream().filter(z -> z.name().equals("Westfalenhallen")).findFirst()
+                .orElseThrow(() -> new IllegalStateException("Westfalenhallen zone not found — run ZoneDataSeeder first"));
+        var phoenixsee = zones.stream().filter(z -> z.name().equals("Phoenixsee")).findFirst()
+                .orElseThrow(() -> new IllegalStateException("Phoenixsee zone not found — run ZoneDataSeeder first"));
 
-        // Zone A
-        var rA1 = pricingRuleService.createRule(zoneA.id(), PricingRule.SpaceType.REGULAR,
+        // Westenhellweg — city centre premium rates
+        pricingRuleService.createRule(westenhellweg.id(), PricingRule.SpaceType.REGULAR,
+                new BigDecimal("2.50"), EPOCH, null);
+        pricingRuleService.createRule(westenhellweg.id(), PricingRule.SpaceType.EV,
+                new BigDecimal("4.00"), EPOCH, null);
+
+        // Hauptbahnhof — standard station rates
+        pricingRuleService.createRule(hauptbahnhof.id(), PricingRule.SpaceType.REGULAR,
                 new BigDecimal("2.00"), EPOCH, null);
-        var rA2 = pricingRuleService.createRule(zoneA.id(), PricingRule.SpaceType.EV,
+        pricingRuleService.createRule(hauptbahnhof.id(), PricingRule.SpaceType.EV,
                 new BigDecimal("3.50"), EPOCH, null);
 
-        // Zone B
-        var rB1 = pricingRuleService.createRule(zoneB.id(), PricingRule.SpaceType.REGULAR,
+        // Westfalenhallen — event venue rates
+        pricingRuleService.createRule(westfalenhallen.id(), PricingRule.SpaceType.REGULAR,
+                new BigDecimal("1.80"), EPOCH, null);
+        pricingRuleService.createRule(westfalenhallen.id(), PricingRule.SpaceType.EV,
+                new BigDecimal("3.00"), EPOCH, null);
+
+        // Phoenixsee — residential/leisure rates
+        pricingRuleService.createRule(phoenixsee.id(), PricingRule.SpaceType.REGULAR,
                 new BigDecimal("1.50"), EPOCH, null);
-        var rB2 = pricingRuleService.createRule(zoneB.id(), PricingRule.SpaceType.EV,
+        pricingRuleService.createRule(phoenixsee.id(), PricingRule.SpaceType.EV,
                 new BigDecimal("2.80"), EPOCH, null);
 
-        log.info("[Seed] Pricing rules created:");
-        log.info("[Seed]   Zone A REGULAR €2.00/hr  id={}", rA1.getId());
-        log.info("[Seed]   Zone A EV      €3.50/hr  id={}", rA2.getId());
-        log.info("[Seed]   Zone B REGULAR €1.50/hr  id={}", rB1.getId());
-        log.info("[Seed]   Zone B EV      €2.80/hr  id={}", rB2.getId());
+        log.info("[Seed] Pricing rules created for Westenhellweg, Hauptbahnhof, Westfalenhallen, Phoenixsee");
     }
 }

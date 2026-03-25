@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface IZoneAvailability {
     boolean isSpaceAvailable(UUID spaceId);
     List<UUID> findAvailableSpaces(UUID zoneId);
+    /** Returns IDs of ALL spaces in the zone regardless of current state. */
+    List<UUID> findAllSpaceIds(UUID zoneId);
 }

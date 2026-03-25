@@ -15,5 +15,6 @@ interface IParkingZoneRepo {
     Optional<ParkingZone> findZoneById(UUID id);
     List<ParkingZone> findAllZones();
     Optional<ParkingSpace> findSpaceById(UUID id);
+    List<ParkingSpace> findAllSpaces();
     List<ParkingSpace> findSpacesByZoneId(UUID zoneId);
 }

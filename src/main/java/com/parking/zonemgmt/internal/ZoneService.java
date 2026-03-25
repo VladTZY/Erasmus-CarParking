@@ -1,11 +1,13 @@
 package com.parking.zonemgmt.internal;
 
+import com.parking.reservation.IReservationAvailability;
 import com.parking.zonemgmt.*;
 import org.springframework.context.ApplicationEventPublisher;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,10 +17,13 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
 
     private final ParkingZoneRepo repo;
     private final ApplicationEventPublisher eventPublisher;
+    private final IReservationAvailability reservationAvailability;
 
-    ZoneService(ParkingZoneRepo repo, ApplicationEventPublisher eventPublisher) {
+    ZoneService(ParkingZoneRepo repo, ApplicationEventPublisher eventPublisher,
+                IReservationAvailability reservationAvailability) {
         this.repo = repo;
         this.eventPublisher = eventPublisher;
+        this.reservationAvailability = reservationAvailability;
     }
 
     // ── IZoneAvailability ─────────────────────────────────────────────────────
@@ -36,6 +41,14 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
     public List<UUID> findAvailableSpaces(UUID zoneId) {
         return repo.findSpacesByZoneId(zoneId).stream()
                 .filter(s -> s.getState() == ParkingSpace.SpaceState.FREE)
+                .map(ParkingSpace::getId)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UUID> findAllSpaceIds(UUID zoneId) {
+        return repo.findSpacesByZoneId(zoneId).stream()
                 .map(ParkingSpace::getId)
                 .toList();
     }
@@ -105,6 +118,16 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
         repo.deleteZone(id);
     }
 
+    @Transactional
+    ParkingZoneDTO updateMapData(UUID id, Double latitude, Double longitude, String boundary) {
+        var zone = repo.findZoneById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Zone not found: " + id));
+        zone.setLatitude(latitude);
+        zone.setLongitude(longitude);
+        zone.setBoundary(boundary);
+        return toDTO(repo.saveZone(zone));
+    }
+
     // ── Space CRUD ────────────────────────────────────────────────────────────
 
     @Transactional(readOnly = true)
@@ -112,11 +135,25 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
         return repo.findSpacesByZoneId(zoneId);
     }
 
+    @Transactional(readOnly = true)
+    List<ParkingSpace> listAvailableSpaces(UUID zoneId, LocalDateTime startTime, LocalDateTime endTime) {
+        return repo.findSpacesByZoneId(zoneId).stream()
+                .filter(s -> !reservationAvailability.hasOverlap(s.getId(), startTime, endTime))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    List<ParkingSpace> listAllAvailableSpaces(LocalDateTime startTime, LocalDateTime endTime) {
+        return repo.findAllSpaces().stream()
+                .filter(s -> !reservationAvailability.hasOverlap(s.getId(), startTime, endTime))
+                .toList();
+    }
+
     @Transactional
-    ParkingSpace createSpace(UUID zoneId, ParkingSpace.SpaceType type) {
+    ParkingSpace createSpace(UUID zoneId, String name, ParkingSpace.SpaceType type) {
         repo.findZoneById(zoneId)
                 .orElseThrow(() -> new IllegalArgumentException("Zone not found: " + zoneId));
-        var space = new ParkingSpace(UUID.randomUUID(), zoneId, type, ParkingSpace.SpaceState.FREE);
+        var space = new ParkingSpace(UUID.randomUUID(), zoneId, name, type, ParkingSpace.SpaceState.FREE);
         return repo.saveSpace(space);
     }
 
@@ -143,6 +180,9 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
         long available = repo.findSpacesByZoneId(zone.getId()).stream()
                 .filter(s -> s.getState() == ParkingSpace.SpaceState.FREE)
                 .count();
-        return new ParkingZoneDTO(zone.getId(), zone.getName(), zone.getAddress(), zone.getTotalCapacity(), available);
+        return new ParkingZoneDTO(
+                zone.getId(), zone.getName(), zone.getAddress(), zone.getTotalCapacity(), available,
+                zone.getLatitude(), zone.getLongitude(), zone.getBoundary()
+        );
     }
 }

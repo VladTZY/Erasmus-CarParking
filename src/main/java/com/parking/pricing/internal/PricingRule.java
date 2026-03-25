@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "pricing_rules")
-class PricingRule {
+public class PricingRule {
 
     @Id
     private UUID id;
@@ -42,16 +42,16 @@ class PricingRule {
         this.validTo = validTo;
     }
 
-    UUID getId() { return id; }
-    UUID getZoneId() { return zoneId; }
-    SpaceType getSpaceType() { return spaceType; }
-    BigDecimal getRatePerHour() { return ratePerHour; }
-    LocalDateTime getValidFrom() { return validFrom; }
-    LocalDateTime getValidTo() { return validTo; }
+    public UUID getId() { return id; }
+    public UUID getZoneId() { return zoneId; }
+    public SpaceType getSpaceType() { return spaceType; }
+    public BigDecimal getRatePerHour() { return ratePerHour; }
+    public LocalDateTime getValidFrom() { return validFrom; }
+    public LocalDateTime getValidTo() { return validTo; }
 
-    void setZoneId(UUID zoneId) { this.zoneId = zoneId; }
-    void setSpaceType(SpaceType spaceType) { this.spaceType = spaceType; }
-    void setRatePerHour(BigDecimal ratePerHour) { this.ratePerHour = ratePerHour; }
-    void setValidFrom(LocalDateTime validFrom) { this.validFrom = validFrom; }
-    void setValidTo(LocalDateTime validTo) { this.validTo = validTo; }
+    public void setZoneId(UUID zoneId) { this.zoneId = zoneId; }
+    public void setSpaceType(SpaceType spaceType) { this.spaceType = spaceType; }
+    public void setRatePerHour(BigDecimal ratePerHour) { this.ratePerHour = ratePerHour; }
+    public void setValidFrom(LocalDateTime validFrom) { this.validFrom = validFrom; }
+    public void setValidTo(LocalDateTime validTo) { this.validTo = validTo; }
 }

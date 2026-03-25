@@ -13,6 +13,9 @@ public class ParkingSpace {
     @Column(nullable = false)
     private UUID zoneId;
 
+    @Column(nullable = false)
+    private String name;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SpaceType type;
@@ -26,18 +29,21 @@ public class ParkingSpace {
 
     protected ParkingSpace() {}
 
-    public ParkingSpace(UUID id, UUID zoneId, SpaceType type, SpaceState state) {
+    public ParkingSpace(UUID id, UUID zoneId, String name, SpaceType type, SpaceState state) {
         this.id = id;
         this.zoneId = zoneId;
+        this.name = name;
         this.type = type;
         this.state = state;
     }
 
     public UUID getId() { return id; }
     public UUID getZoneId() { return zoneId; }
+    public String getName() { return name; }
     public SpaceType getType() { return type; }
     public SpaceState getState() { return state; }
 
+    public void setName(String name) { this.name = name; }
     public void setState(SpaceState state) { this.state = state; }
     public void setType(SpaceType type) { this.type = type; }
 }

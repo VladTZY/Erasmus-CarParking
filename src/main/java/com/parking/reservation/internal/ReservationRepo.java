@@ -1,17 +1,19 @@
 package com.parking.reservation.internal;
 
+import com.parking.reservation.IReservationAvailability;
 import com.parking.reservation.IReservationRepo;
 import com.parking.reservation.ReservationDTO;
 import com.parking.reservation.ReservationStatus;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-class ReservationRepo implements IReservationRepo {
+class ReservationRepo implements IReservationRepo, IReservationAvailability {
 
     private final ReservationJpaRepo jpa;
 
@@ -35,6 +37,16 @@ class ReservationRepo implements IReservationRepo {
 
     List<Reservation> findEntitiesBySpaceIdAndStatus(UUID spaceId, ReservationStatus status) {
         return jpa.findBySpaceIdAndStatus(spaceId, status);
+    }
+
+    List<ReservationDTO> findScheduleBySpaceId(UUID spaceId) {
+        return jpa.findBySpaceIdAndStatusNot(spaceId, ReservationStatus.CANCELLED)
+                .stream().map(this::toDTO).toList();
+    }
+
+    @Override
+    public boolean hasOverlap(UUID spaceId, LocalDateTime startTime, LocalDateTime endTime) {
+        return !jpa.findOverlapping(spaceId, ReservationStatus.CANCELLED, startTime, endTime).isEmpty();
     }
 
     // IReservationRepo — public contract for other modules

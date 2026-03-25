@@ -6,11 +6,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -51,6 +53,12 @@ class ZoneController {
         zoneService.deleteZone(id);
     }
 
+    @PatchMapping("/zones/{id}/map")
+    @PreAuthorize("hasRole('ADMIN')")
+    ParkingZoneDTO updateMapData(@PathVariable UUID id, @RequestBody MapUpdateRequest req) {
+        return zoneService.updateMapData(id, req.latitude(), req.longitude(), req.boundary());
+    }
+
     // ── Space endpoints ───────────────────────────────────────────────────────
 
     @GetMapping("/zones/{id}/spaces")
@@ -58,11 +66,26 @@ class ZoneController {
         return zoneService.listSpaces(id);
     }
 
+    @GetMapping("/zones/{id}/spaces/available")
+    List<ParkingSpace> listAvailableSpaces(
+            @PathVariable UUID id,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
+        return zoneService.listAvailableSpaces(id, startTime, endTime);
+    }
+
+    @GetMapping("/zones/spaces/available")
+    List<ParkingSpace> listAllAvailableSpaces(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
+        return zoneService.listAllAvailableSpaces(startTime, endTime);
+    }
+
     @PostMapping("/zones/{id}/spaces")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     ParkingSpace createSpace(@PathVariable UUID id, @RequestBody @Valid SpaceCreateRequest req) {
-        return zoneService.createSpace(id, req.type());
+        return zoneService.createSpace(id, req.name(), req.type());
     }
 
     @PutMapping("/zones/{id}/spaces/{spaceId}")
@@ -88,10 +111,12 @@ class ZoneController {
             @Positive int totalCapacity
     ) {}
 
-    record SpaceCreateRequest(@NotNull ParkingSpace.SpaceType type) {}
+    record SpaceCreateRequest(@NotBlank String name, @NotNull ParkingSpace.SpaceType type) {}
 
     record SpaceUpdateRequest(
             @NotNull ParkingSpace.SpaceType type,
             @NotNull ParkingSpace.SpaceState state
     ) {}
+
+    record MapUpdateRequest(Double latitude, Double longitude, String boundary) {}
 }
