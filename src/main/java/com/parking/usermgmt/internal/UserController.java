@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.HashMap;
 
 @RestController
 class UserController {
@@ -30,14 +31,23 @@ class UserController {
 
     @PostMapping("/auth/register")
     @ResponseStatus(HttpStatus.CREATED)
-    UserDTO register(@RequestBody @Valid RegisterRequest request) {
-        return userService.register(request.email(), request.password(), request.role());
+    Map<String, Object> register(@RequestBody @Valid RegisterRequest request) {
+        UserDTO user = userService.register(request.email(), request.password(), request.role());
+        String token = authService.login(request.email(), request.password());
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("token", token);
+        resp.put("user", user);
+        return resp;
     }
 
     @PostMapping("/auth/login")
-    Map<String, String> login(@RequestBody @Valid LoginRequest request) {
+    Map<String, Object> login(@RequestBody @Valid LoginRequest request) {
         String token = authService.login(request.email(), request.password());
-        return Map.of("token", token);
+        UserDTO user = userService.findByEmail(request.email());
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("token", token);
+        resp.put("user", user);
+        return resp;
     }
 
     @GetMapping("/users/me")
