@@ -58,6 +58,13 @@ class ZoneController {
         return zoneService.listSpaces(id);
     }
 
+    @PostMapping("/zones/{id}/spaces")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
+    ParkingSpace createSpace(@PathVariable UUID id, @RequestBody @Valid SpaceCreateRequest req) {
+        return zoneService.createSpace(id, req.type());
+    }
+
     @PutMapping("/zones/{id}/spaces/{spaceId}")
     @PreAuthorize("hasRole('ADMIN')")
     ParkingSpace updateSpace(@PathVariable UUID id,
@@ -80,6 +87,8 @@ class ZoneController {
             @NotBlank String address,
             @Positive int totalCapacity
     ) {}
+
+    record SpaceCreateRequest(@NotNull ParkingSpace.SpaceType type) {}
 
     record SpaceUpdateRequest(
             @NotNull ParkingSpace.SpaceType type,

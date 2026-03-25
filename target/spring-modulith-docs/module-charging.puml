@@ -10,8 +10,10 @@ top to bottom direction
 
 Container_Boundary("ParkingApplication.ParkingApplication_boundary", "ParkingApplication", $tags="") {
   Component(ParkingApplication.ParkingApplication.Charging, "Charging", $techn="Module", $descr="", $tags="", $link="")
+  Component(ParkingApplication.ParkingApplication.Reservation, "Reservation", $techn="Module", $descr="", $tags="", $link="")
 }
 
+Rel(ParkingApplication.ParkingApplication.Charging, ParkingApplication.ParkingApplication.Reservation, "listens to", $techn="", $tags="", $link="")
 
 SHOW_LEGEND(true)
 @enduml

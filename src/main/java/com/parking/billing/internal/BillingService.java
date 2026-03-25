@@ -3,6 +3,7 @@ package com.parking.billing.internal;
 import com.parking.billing.IPaymentGateway;
 import com.parking.billing.InvoiceGeneratedEvent;
 import com.parking.billing.InvoiceStatus;
+import com.parking.charging.ChargingStartedEvent;
 import com.parking.pricing.IPricingPolicy;
 import com.parking.reservation.ReservationCreatedEvent;
 import org.slf4j.Logger;
@@ -10,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -36,7 +37,6 @@ class BillingService {
     }
 
     @ApplicationModuleListener
-    @Transactional
     public void on(ReservationCreatedEvent event) {
         var amount = pricingPolicy.calculate(event.spaceId(), event.durationMinutes());
         var description = "Parking reservation %s — %d min".formatted(event.reservationId(), event.durationMinutes());
@@ -58,5 +58,19 @@ class BillingService {
 
         log.info("Invoice {} {} for reservation {}", invoice.getId(),
                 invoice.getStatus(), event.reservationId());
+    }
+
+    @ApplicationModuleListener
+    public void on(ChargingStartedEvent event) {
+        var description = "EV charging session %s — reservation %s"
+                .formatted(event.sessionId(), event.reservationId());
+
+        var invoice = new Invoice(
+                UUID.randomUUID(), event.reservationId(), event.citizenId(),
+                BigDecimal.ZERO, description, InvoiceStatus.PENDING, LocalDateTime.now()
+        );
+        invoiceRepository.save(invoice);
+
+        log.info("Charging invoice {} created (PENDING) for session {}", invoice.getId(), event.sessionId());
     }
 }
