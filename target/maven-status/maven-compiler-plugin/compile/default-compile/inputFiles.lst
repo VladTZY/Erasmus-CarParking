@@ -13,6 +13,15 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/pricing/package-info.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/ReservationCancelledEvent.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/ReservationCreatedEvent.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/ReservationDTO.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/ReservationEstimateDTO.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/ReservationStatus.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/internal/InvalidTimeRangeException.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/internal/Reservation.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/internal/ReservationController.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/internal/ReservationJpaRepo.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/internal/ReservationService.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/internal/SpaceNotAvailableException.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/package-info.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/usermgmt/IUserRepository.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/usermgmt/User.java
@@ -27,6 +36,7 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/usermgmt/internal/UserService.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/usermgmt/package-info.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/ISpaceQuery.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/ISpaceStateManager.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/IZoneAvailability.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/ParkingSpace.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/ParkingZone.java
@@ -36,7 +46,6 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/internal/ParkingSpaceJpaRepo.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/internal/ParkingZoneJpaRepo.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/internal/ParkingZoneRepo.java
-/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/internal/SpaceStateService.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/internal/ZoneController.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/internal/ZoneService.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/package-info.java

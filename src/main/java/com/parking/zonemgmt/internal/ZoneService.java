@@ -1,6 +1,7 @@
 package com.parking.zonemgmt.internal;
 
 import com.parking.zonemgmt.*;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,12 +10,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-class ZoneService implements IZoneAvailability, ISpaceQuery {
+class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager {
 
     private final ParkingZoneRepo repo;
+    private final ApplicationEventPublisher eventPublisher;
 
-    ZoneService(ParkingZoneRepo repo) {
+    ZoneService(ParkingZoneRepo repo, ApplicationEventPublisher eventPublisher) {
         this.repo = repo;
+        this.eventPublisher = eventPublisher;
     }
 
     // ── IZoneAvailability ─────────────────────────────────────────────────────
@@ -42,6 +45,22 @@ class ZoneService implements IZoneAvailability, ISpaceQuery {
     @Transactional(readOnly = true)
     public Optional<ParkingSpace> findSpace(UUID spaceId) {
         return repo.findSpaceById(spaceId);
+    }
+
+    // ── ISpaceStateManager ────────────────────────────────────────────────────
+
+    @Override
+    @Transactional
+    public void markReserved(UUID spaceId) {
+        changeSpaceState(spaceId, ParkingSpace.SpaceState.RESERVED);
+        eventPublisher.publishEvent(new SpaceStateChangedEvent(spaceId, ParkingSpace.SpaceState.RESERVED));
+    }
+
+    @Override
+    @Transactional
+    public void markFree(UUID spaceId) {
+        changeSpaceState(spaceId, ParkingSpace.SpaceState.FREE);
+        eventPublisher.publishEvent(new SpaceStateChangedEvent(spaceId, ParkingSpace.SpaceState.FREE));
     }
 
     // ── Zone CRUD ─────────────────────────────────────────────────────────────
