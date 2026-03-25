@@ -18,10 +18,10 @@ Container_Boundary("ParkingApplication.ParkingApplication_boundary", "ParkingApp
 
 Rel(ParkingApplication.ParkingApplication.Reservation, ParkingApplication.ParkingApplication.ZoneManagement, "uses", $techn="", $tags="", $link="")
 Rel(ParkingApplication.ParkingApplication.Billing, ParkingApplication.ParkingApplication.Reservation, "listens to", $techn="", $tags="", $link="")
-Rel(ParkingApplication.ParkingApplication.Notification, ParkingApplication.ParkingApplication.ZoneManagement, "listens to", $techn="", $tags="", $link="")
 Rel(ParkingApplication.ParkingApplication.Notification, ParkingApplication.ParkingApplication.Reservation, "listens to", $techn="", $tags="", $link="")
-Rel(ParkingApplication.ParkingApplication.Notification, ParkingApplication.ParkingApplication.Billing, "listens to", $techn="", $tags="", $link="")
+Rel(ParkingApplication.ParkingApplication.Notification, ParkingApplication.ParkingApplication.ZoneManagement, "listens to", $techn="", $tags="", $link="")
 Rel(ParkingApplication.ParkingApplication.Notification, ParkingApplication.ParkingApplication.UserManagement, "listens to", $techn="", $tags="", $link="")
+Rel(ParkingApplication.ParkingApplication.Notification, ParkingApplication.ParkingApplication.Billing, "listens to", $techn="", $tags="", $link="")
 
 SHOW_LEGEND(true)
 @enduml

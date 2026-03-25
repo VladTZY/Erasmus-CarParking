@@ -2,6 +2,7 @@ package com.parking.zonemgmt.internal;
 
 import com.parking.zonemgmt.*;
 import org.springframework.context.ApplicationEventPublisher;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager {
+class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager, IZoneQuery {
 
     private final ParkingZoneRepo repo;
     private final ApplicationEventPublisher eventPublisher;
@@ -65,9 +66,15 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager 
 
     // ── Zone CRUD ─────────────────────────────────────────────────────────────
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ParkingZoneDTO> findAllZones() {
+        return repo.findAllZones().stream().map(this::toDTO).toList();
+    }
+
     @Transactional(readOnly = true)
     List<ParkingZoneDTO> listZones() {
-        return repo.findAllZones().stream().map(this::toDTO).toList();
+        return findAllZones();
     }
 
     @Transactional(readOnly = true)
