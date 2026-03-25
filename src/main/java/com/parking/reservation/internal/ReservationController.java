@@ -2,7 +2,6 @@ package com.parking.reservation.internal;
 
 import com.parking.reservation.ReservationDTO;
 import com.parking.reservation.ReservationEstimateDTO;
-import com.parking.usermgmt.User;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -50,7 +49,7 @@ class ReservationController {
     @GetMapping("/reservations/my")
     List<ReservationDTO> getMy(Authentication auth) {
         UUID citizenId = (UUID) auth.getPrincipal();
-        return reservationService.getBycitizenId(citizenId);
+        return reservationService.getByCitizenId(citizenId);
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -58,7 +57,12 @@ class ReservationController {
     void cancel(@PathVariable UUID id, Authentication auth) {
         UUID userId = (UUID) auth.getPrincipal();
         boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        reservationService.cancelReservation(id, userId, isAdmin);
+        // Admin can cancel any reservation — resolve the owner's citizenId so the service's
+        // ownership check is satisfied without leaking admin-role logic into the service layer.
+        UUID effectiveCitizenId = isAdmin
+                ? reservationService.getById(id).citizenId()
+                : userId;
+        reservationService.cancelReservation(id, effectiveCitizenId);
     }
 
     @ExceptionHandler(SpaceNotAvailableException.class)

@@ -15,11 +15,11 @@ Container_Boundary("ParkingApplication.ParkingApplication_boundary", "ParkingApp
   Component(ParkingApplication.ParkingApplication.ZoneManagement, "Zone Management", $techn="Module", $descr="", $tags="", $link="")
 }
 
-Rel(ParkingApplication.ParkingApplication.Pricing, ParkingApplication.ParkingApplication.ZoneManagement, "uses", $techn="", $tags="", $link="")
-Rel(ParkingApplication.ParkingApplication.Billing, ParkingApplication.ParkingApplication.Reservation, "listens to", $techn="", $tags="", $link="")
-Rel(ParkingApplication.ParkingApplication.Billing, ParkingApplication.ParkingApplication.Pricing, "uses", $techn="", $tags="", $link="")
 Rel(ParkingApplication.ParkingApplication.Reservation, ParkingApplication.ParkingApplication.ZoneManagement, "uses", $techn="", $tags="", $link="")
 Rel(ParkingApplication.ParkingApplication.Reservation, ParkingApplication.ParkingApplication.Pricing, "uses", $techn="", $tags="", $link="")
+Rel(ParkingApplication.ParkingApplication.Billing, ParkingApplication.ParkingApplication.Reservation, "listens to", $techn="", $tags="", $link="")
+Rel(ParkingApplication.ParkingApplication.Billing, ParkingApplication.ParkingApplication.Pricing, "uses", $techn="", $tags="", $link="")
+Rel(ParkingApplication.ParkingApplication.Pricing, ParkingApplication.ParkingApplication.ZoneManagement, "uses", $techn="", $tags="", $link="")
 
 SHOW_LEGEND(true)
 @enduml

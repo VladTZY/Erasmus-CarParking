@@ -16,13 +16,13 @@ import java.util.UUID;
 @Service
 class ReservationService {
 
-    private final ReservationJpaRepo repo;
+    private final ReservationRepo repo;
     private final IZoneAvailability zoneAvailability;
     private final ISpaceStateManager spaceStateManager;
     private final IPricingPolicy pricingPolicy;
     private final ApplicationEventPublisher eventPublisher;
 
-    ReservationService(ReservationJpaRepo repo,
+    ReservationService(ReservationRepo repo,
                        IZoneAvailability zoneAvailability,
                        ISpaceStateManager spaceStateManager,
                        IPricingPolicy pricingPolicy,
@@ -73,11 +73,11 @@ class ReservationService {
     }
 
     @Transactional
-    void cancelReservation(UUID reservationId, UUID citizenId, boolean isAdmin) {
-        var reservation = repo.findById(reservationId)
+    void cancelReservation(UUID reservationId, UUID citizenId) {
+        var reservation = repo.findEntityById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + reservationId));
 
-        if (!isAdmin && !reservation.getCitizenId().equals(citizenId)) {
+        if (!reservation.getCitizenId().equals(citizenId)) {
             throw new IllegalStateException("Not authorized to cancel this reservation");
         }
         if (reservation.getStatus() == ReservationStatus.CANCELLED) {
@@ -96,14 +96,14 @@ class ReservationService {
 
     @Transactional(readOnly = true)
     ReservationDTO getById(UUID reservationId) {
-        return repo.findById(reservationId)
+        return repo.findEntityById(reservationId)
                 .map(this::toDTO)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + reservationId));
     }
 
     @Transactional(readOnly = true)
-    List<ReservationDTO> getBycitizenId(UUID citizenId) {
-        return repo.findByCitizenId(citizenId).stream().map(this::toDTO).toList();
+    List<ReservationDTO> getByCitizenId(UUID citizenId) {
+        return repo.findEntitiesByCitizenId(citizenId).stream().map(this::toDTO).toList();
     }
 
     @Transactional(readOnly = true)
