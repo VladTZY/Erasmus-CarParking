@@ -3,8 +3,11 @@ package com.parking.charging.internal;
 import com.parking.charging.ChargingSessionDTO;
 import com.parking.charging.ChargingStartedEvent;
 import com.parking.charging.ChargingStatus;
+import com.parking.zonemgmt.ISpaceQuery;
+import com.parking.zonemgmt.IZoneQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +26,19 @@ class ChargingPointService {
     private final ChargingSessionRepo sessionRepo;
     private final ChargingStrategyService strategyService;
     private final ApplicationEventPublisher eventPublisher;
+    private final ISpaceQuery spaceQuery;
+    private final IZoneQuery zoneQuery;
 
     ChargingPointService(ChargingSessionRepo sessionRepo,
                          ChargingStrategyService strategyService,
-                         ApplicationEventPublisher eventPublisher) {
+                         ApplicationEventPublisher eventPublisher,
+                         @Lazy ISpaceQuery spaceQuery,
+                         @Lazy IZoneQuery zoneQuery) {
         this.sessionRepo = sessionRepo;
         this.strategyService = strategyService;
         this.eventPublisher = eventPublisher;
+        this.spaceQuery = spaceQuery;
+        this.zoneQuery = zoneQuery;
     }
 
     @Transactional
@@ -72,7 +81,11 @@ class ChargingPointService {
     }
 
     private ChargingSessionDTO toDTO(ChargingSession s) {
+        var space = spaceQuery.findSpace(s.getSpaceId());
+        String spaceName = space.map(sp -> sp.getName()).orElse(null);
+        String zoneName = space.flatMap(sp -> zoneQuery.findZoneById(sp.getZoneId()))
+                .map(z -> z.name()).orElse(null);
         return new ChargingSessionDTO(s.getId(), s.getReservationId(), s.getSpaceId(),
-                s.getStatus(), s.getStartedAt(), s.getEnergyKwh());
+                spaceName, zoneName, s.getStatus(), s.getStartedAt(), s.getEnergyKwh());
     }
 }

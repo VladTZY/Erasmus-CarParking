@@ -3,6 +3,9 @@ package com.parking.charging.internal;
 import com.parking.charging.ChargingSessionDTO;
 import com.parking.charging.ChargingStatus;
 import com.parking.charging.IChargingSessionRepo;
+import com.parking.zonemgmt.ISpaceQuery;
+import com.parking.zonemgmt.IZoneQuery;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,9 +16,13 @@ import java.util.UUID;
 class ChargingSessionRepo implements IChargingSessionRepo {
 
     private final ChargingSessionJpaRepo jpa;
+    private final ISpaceQuery spaceQuery;
+    private final IZoneQuery zoneQuery;
 
-    ChargingSessionRepo(ChargingSessionJpaRepo jpa) {
+    ChargingSessionRepo(ChargingSessionJpaRepo jpa, @Lazy ISpaceQuery spaceQuery, @Lazy IZoneQuery zoneQuery) {
         this.jpa = jpa;
+        this.spaceQuery = spaceQuery;
+        this.zoneQuery = zoneQuery;
     }
 
     // Package-private — for use by services in this module only
@@ -53,7 +60,11 @@ class ChargingSessionRepo implements IChargingSessionRepo {
     }
 
     private ChargingSessionDTO toDTO(ChargingSession s) {
+        var space = spaceQuery.findSpace(s.getSpaceId());
+        String spaceName = space.map(sp -> sp.getName()).orElse(null);
+        String zoneName = space.flatMap(sp -> zoneQuery.findZoneById(sp.getZoneId()))
+                .map(z -> z.name()).orElse(null);
         return new ChargingSessionDTO(s.getId(), s.getReservationId(), s.getSpaceId(),
-                s.getStatus(), s.getStartedAt(), s.getEnergyKwh());
+                spaceName, zoneName, s.getStatus(), s.getStartedAt(), s.getEnergyKwh());
     }
 }
