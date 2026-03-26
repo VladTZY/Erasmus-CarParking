@@ -1,6 +1,8 @@
 package com.parking.zonemgmt;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Exported interface — allows other modules (e.g. Pricing) to list zones
@@ -8,4 +10,5 @@ import java.util.List;
  */
 public interface IZoneQuery {
     List<ParkingZoneDTO> findAllZones();
+    Optional<ParkingZoneDTO> findZoneById(UUID zoneId);
 }

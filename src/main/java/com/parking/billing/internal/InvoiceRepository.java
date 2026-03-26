@@ -44,6 +44,6 @@ class InvoiceRepository implements IInvoiceRepository {
     }
 
     private InvoiceDTO toDTO(Invoice i) {
-        return new InvoiceDTO(i.getId(), i.getReservationId(), i.getAmount(), i.getStatus(), i.getCreatedAt());
+        return new InvoiceDTO(i.getId(), i.getReservationId(), null, null, i.getAmount(), i.getStatus(), i.getCreatedAt());
     }
 }

@@ -4,6 +4,9 @@ import com.parking.reservation.IReservationAvailability;
 import com.parking.reservation.IReservationRepo;
 import com.parking.reservation.ReservationDTO;
 import com.parking.reservation.ReservationStatus;
+import com.parking.zonemgmt.ISpaceQuery;
+import com.parking.zonemgmt.IZoneQuery;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -16,9 +19,13 @@ import java.util.UUID;
 class ReservationRepo implements IReservationRepo, IReservationAvailability {
 
     private final ReservationJpaRepo jpa;
+    private final ISpaceQuery spaceQuery;
+    private final IZoneQuery zoneQuery;
 
-    ReservationRepo(ReservationJpaRepo jpa) {
+    ReservationRepo(ReservationJpaRepo jpa, @Lazy ISpaceQuery spaceQuery, @Lazy IZoneQuery zoneQuery) {
         this.jpa = jpa;
+        this.spaceQuery = spaceQuery;
+        this.zoneQuery = zoneQuery;
     }
 
     // Package-private — for use by ReservationService only
@@ -63,7 +70,11 @@ class ReservationRepo implements IReservationRepo, IReservationAvailability {
 
     private ReservationDTO toDTO(Reservation r) {
         int duration = (int) ChronoUnit.MINUTES.between(r.getStartTime(), r.getEndTime());
-        return new ReservationDTO(r.getId(), r.getSpaceId(), r.getCitizenId(),
+        var space = spaceQuery.findSpace(r.getSpaceId());
+        String spaceName = space.map(s -> s.getName()).orElse(null);
+        String zoneName = space.flatMap(s -> zoneQuery.findZoneById(s.getZoneId()))
+                .map(z -> z.name()).orElse(null);
+        return new ReservationDTO(r.getId(), r.getSpaceId(), spaceName, zoneName, r.getCitizenId(),
                 r.getStartTime(), r.getEndTime(), duration,
                 r.getEstimatedFee(), r.isWithCharging(), r.getStatus());
     }

@@ -7,6 +7,8 @@ import java.util.UUID;
 public record InvoiceDTO(
         UUID id,
         UUID reservationId,
+        String spaceName,
+        String zoneName,
         BigDecimal amount,
         InvoiceStatus status,
         LocalDateTime createdAt

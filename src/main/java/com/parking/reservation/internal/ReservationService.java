@@ -2,8 +2,11 @@ package com.parking.reservation.internal;
 
 import com.parking.pricing.IPricingPolicy;
 import com.parking.reservation.*;
+import com.parking.zonemgmt.ISpaceQuery;
 import com.parking.zonemgmt.ISpaceStateManager;
 import com.parking.zonemgmt.IZoneAvailability;
+import com.parking.zonemgmt.IZoneQuery;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +22,23 @@ class ReservationService {
     private final ReservationRepo repo;
     private final IZoneAvailability zoneAvailability;
     private final ISpaceStateManager spaceStateManager;
+    private final ISpaceQuery spaceQuery;
+    private final IZoneQuery zoneQuery;
     private final IPricingPolicy pricingPolicy;
     private final ApplicationEventPublisher eventPublisher;
 
     ReservationService(ReservationRepo repo,
                        IZoneAvailability zoneAvailability,
                        ISpaceStateManager spaceStateManager,
+                       @Lazy ISpaceQuery spaceQuery,
+                       @Lazy IZoneQuery zoneQuery,
                        IPricingPolicy pricingPolicy,
                        ApplicationEventPublisher eventPublisher) {
         this.repo = repo;
         this.zoneAvailability = zoneAvailability;
         this.spaceStateManager = spaceStateManager;
+        this.spaceQuery = spaceQuery;
+        this.zoneQuery = zoneQuery;
         this.pricingPolicy = pricingPolicy;
         this.eventPublisher = eventPublisher;
     }
@@ -136,7 +145,11 @@ class ReservationService {
 
     private ReservationDTO toDTO(Reservation r) {
         int duration = (int) ChronoUnit.MINUTES.between(r.getStartTime(), r.getEndTime());
-        return new ReservationDTO(r.getId(), r.getSpaceId(), r.getCitizenId(),
+        var space = spaceQuery.findSpace(r.getSpaceId());
+        String spaceName = space.map(s -> s.getName()).orElse(null);
+        String zoneName = space.flatMap(s -> zoneQuery.findZoneById(s.getZoneId()))
+                .map(z -> z.name()).orElse(null);
+        return new ReservationDTO(r.getId(), r.getSpaceId(), spaceName, zoneName, r.getCitizenId(),
                 r.getStartTime(), r.getEndTime(), duration,
                 r.getEstimatedFee(), r.isWithCharging(), r.getStatus());
     }

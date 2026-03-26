@@ -1,1 +1,1 @@
-[]
+[{"name":"com.parking.reservation.internal.ReservationService","methods":[{"name":"getSchedule","signature":"getSchedule(java.util.UUID)","comment":"Returns all non-cancelled reservations for a space (for schedule display)."},{"name":"searchAvailable","signature":"searchAvailable(java.util.UUID, java.time.LocalDateTime, java.time.LocalDateTime)","comment":"Returns space IDs in the zone that have no overlapping reservations in [startTime, endTime]."}]}]

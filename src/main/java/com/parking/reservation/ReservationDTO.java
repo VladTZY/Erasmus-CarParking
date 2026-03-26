@@ -7,6 +7,8 @@ import java.util.UUID;
 public record ReservationDTO(
         UUID id,
         UUID spaceId,
+        String spaceName,
+        String zoneName,
         UUID citizenId,
         LocalDateTime startTime,
         LocalDateTime endTime,

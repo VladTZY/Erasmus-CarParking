@@ -85,6 +85,12 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
         return repo.findAllZones().stream().map(this::toDTO).toList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<ParkingZoneDTO> findZoneById(UUID zoneId) {
+        return repo.findZoneById(zoneId).map(this::toDTO);
+    }
+
     @Transactional(readOnly = true)
     List<ParkingZoneDTO> listZones() {
         return findAllZones();
