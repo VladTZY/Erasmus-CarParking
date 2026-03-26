@@ -43,7 +43,15 @@ class InvoiceRepository implements IInvoiceRepository {
         return jpa.findAll().stream().map(this::toDTO).toList();
     }
 
+    Optional<Invoice> findPendingChargingInvoice(UUID reservationId) {
+        return jpa.findByReservationId(reservationId).stream()
+                .filter(i -> i.getInvoiceType() == com.parking.billing.InvoiceType.CHARGING
+                        && i.getStatus() == com.parking.billing.InvoiceStatus.PENDING)
+                .findFirst();
+    }
+
     private InvoiceDTO toDTO(Invoice i) {
-        return new InvoiceDTO(i.getId(), i.getReservationId(), null, null, i.getAmount(), i.getStatus(), i.getCreatedAt());
+        return new InvoiceDTO(i.getId(), i.getReservationId(), null, null,
+                i.getAmount(), i.getStatus(), i.getInvoiceType(), i.getCreatedAt());
     }
 }

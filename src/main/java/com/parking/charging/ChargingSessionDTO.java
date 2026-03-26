@@ -11,5 +11,6 @@ public record ChargingSessionDTO(
         String zoneName,
         ChargingStatus status,
         LocalDateTime startedAt,
-        Double energyKwh
+        Double energyKwh,
+        String licensePlate
 ) {}

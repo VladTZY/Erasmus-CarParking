@@ -3,6 +3,8 @@ package com.parking.billing.internal;
 import com.parking.billing.IPaymentGateway;
 import com.parking.billing.InvoiceGeneratedEvent;
 import com.parking.billing.InvoiceStatus;
+import com.parking.billing.InvoiceType;
+import com.parking.charging.ChargingCompletedEvent;
 import com.parking.charging.ChargingStartedEvent;
 import com.parking.pricing.IPricingPolicy;
 import com.parking.reservation.ReservationCreatedEvent;
@@ -13,6 +15,7 @@ import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -36,6 +39,8 @@ class BillingService {
         this.eventPublisher = eventPublisher;
     }
 
+    private static final BigDecimal KWH_RATE = new BigDecimal("0.30"); // €0.30 per kWh
+
     @ApplicationModuleListener
     public void on(ReservationCreatedEvent event) {
         var amount = pricingPolicy.calculate(event.spaceId(), event.durationMinutes());
@@ -43,7 +48,7 @@ class BillingService {
 
         var invoice = new Invoice(
                 UUID.randomUUID(), event.reservationId(), event.citizenId(),
-                amount, description, InvoiceStatus.PENDING, LocalDateTime.now()
+                amount, description, InvoiceStatus.PENDING, InvoiceType.RESERVATION, LocalDateTime.now()
         );
         invoice = invoiceRepository.save(invoice);
 
@@ -67,10 +72,33 @@ class BillingService {
 
         var invoice = new Invoice(
                 UUID.randomUUID(), event.reservationId(), event.citizenId(),
-                BigDecimal.ZERO, description, InvoiceStatus.PENDING, LocalDateTime.now()
+                BigDecimal.ZERO, description, InvoiceStatus.PENDING, InvoiceType.CHARGING, LocalDateTime.now()
         );
         invoiceRepository.save(invoice);
 
         log.info("Charging invoice {} created (PENDING) for session {}", invoice.getId(), event.sessionId());
+    }
+
+    @ApplicationModuleListener
+    public void on(ChargingCompletedEvent event) {
+        var invoice = invoiceRepository.findPendingChargingInvoice(event.reservationId())
+                .orElse(null);
+
+        if (invoice == null) {
+            log.warn("No pending charging invoice found for reservation {}", event.reservationId());
+            return;
+        }
+
+        var amount = KWH_RATE.multiply(BigDecimal.valueOf(event.energyKwh()))
+                .setScale(2, RoundingMode.HALF_UP);
+        invoice.setAmount(amount);
+
+        var description = "EV charging — %.2f kWh × €%.2f/kWh".formatted(event.energyKwh(), KWH_RATE.doubleValue());
+        var result = paymentGateway.charge(event.citizenId(), amount, description);
+
+        invoice.setStatus(result.success() ? InvoiceStatus.PAID : InvoiceStatus.FAILED);
+        invoiceRepository.save(invoice);
+
+        log.info("Charging invoice {} {} — {:.2f} kWh = €{}", invoice.getId(), invoice.getStatus(), event.energyKwh(), amount);
     }
 }

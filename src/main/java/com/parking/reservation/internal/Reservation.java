@@ -31,6 +31,9 @@ class Reservation {
     @Column(nullable = false)
     private boolean withCharging;
 
+    @Column
+    private String licensePlate;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReservationStatus status;
@@ -38,7 +41,7 @@ class Reservation {
     protected Reservation() {}
 
     Reservation(UUID id, UUID spaceId, UUID citizenId, LocalDateTime startTime, LocalDateTime endTime,
-                BigDecimal estimatedFee, boolean withCharging, ReservationStatus status) {
+                BigDecimal estimatedFee, boolean withCharging, String licensePlate, ReservationStatus status) {
         this.id = id;
         this.spaceId = spaceId;
         this.citizenId = citizenId;
@@ -46,6 +49,7 @@ class Reservation {
         this.endTime = endTime;
         this.estimatedFee = estimatedFee;
         this.withCharging = withCharging;
+        this.licensePlate = licensePlate;
         this.status = status;
     }
 
@@ -56,6 +60,7 @@ class Reservation {
     LocalDateTime getEndTime() { return endTime; }
     BigDecimal getEstimatedFee() { return estimatedFee; }
     boolean isWithCharging() { return withCharging; }
+    String getLicensePlate() { return licensePlate; }
     ReservationStatus getStatus() { return status; }
 
     void setStatus(ReservationStatus status) { this.status = status; }

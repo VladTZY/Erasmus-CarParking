@@ -44,7 +44,7 @@ class BillingController {
     private InvoiceDTO enrich(InvoiceDTO dto) {
         return reservationRepo.findById(dto.reservationId())
                 .map(r -> new InvoiceDTO(dto.id(), dto.reservationId(), r.spaceName(), r.zoneName(),
-                        dto.amount(), dto.status(), dto.createdAt()))
+                        dto.amount(), dto.status(), dto.invoiceType(), dto.createdAt()))
                 .orElse(dto);
     }
 

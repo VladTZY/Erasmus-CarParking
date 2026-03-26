@@ -76,6 +76,6 @@ class ReservationRepo implements IReservationRepo, IReservationAvailability {
                 .map(z -> z.name()).orElse(null);
         return new ReservationDTO(r.getId(), r.getSpaceId(), spaceName, zoneName, r.getCitizenId(),
                 r.getStartTime(), r.getEndTime(), duration,
-                r.getEstimatedFee(), r.isWithCharging(), r.getStatus());
+                r.getEstimatedFee(), r.isWithCharging(), r.getStatus(), r.getLicensePlate());
     }
 }

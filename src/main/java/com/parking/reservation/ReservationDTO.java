@@ -15,5 +15,6 @@ public record ReservationDTO(
         int durationMinutes,
         BigDecimal estimatedFee,
         boolean withCharging,
-        ReservationStatus status
+        ReservationStatus status,
+        String licensePlate
 ) {}

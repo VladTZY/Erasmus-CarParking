@@ -57,7 +57,7 @@ class ReservationService {
 
     @Transactional
     ReservationDTO createReservation(UUID spaceId, UUID citizenId, LocalDateTime startTime,
-                                     LocalDateTime endTime, boolean withCharging) {
+                                     LocalDateTime endTime, boolean withCharging, String licensePlate) {
         validateTimeRange(startTime, endTime);
         if (repo.hasOverlap(spaceId, startTime, endTime)) {
             throw new SpaceNotAvailableException(spaceId);
@@ -67,7 +67,7 @@ class ReservationService {
 
         var reservation = new Reservation(
                 UUID.randomUUID(), spaceId, citizenId, startTime, endTime,
-                estimate.estimatedFee(), withCharging, ReservationStatus.CONFIRMED
+                estimate.estimatedFee(), withCharging, licensePlate, ReservationStatus.CONFIRMED
         );
         reservation = repo.save(reservation);
 
@@ -151,6 +151,6 @@ class ReservationService {
                 .map(z -> z.name()).orElse(null);
         return new ReservationDTO(r.getId(), r.getSpaceId(), spaceName, zoneName, r.getCitizenId(),
                 r.getStartTime(), r.getEndTime(), duration,
-                r.getEstimatedFee(), r.isWithCharging(), r.getStatus());
+                r.getEstimatedFee(), r.isWithCharging(), r.getStatus(), r.getLicensePlate());
     }
 }

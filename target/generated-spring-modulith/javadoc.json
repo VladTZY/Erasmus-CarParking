@@ -1,1 +1,1 @@
-[]
+[{"name":"com.parking.charging.internal.ChargingPointService","methods":[{"name":"liveEnergyKwh","signature":"liveEnergyKwh(com.parking.charging.internal.ChargingSession)","comment":"Returns live kWh for ACTIVE sessions (7.4 kW rate), or the stored value otherwise."}]}]

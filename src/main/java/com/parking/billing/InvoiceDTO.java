@@ -11,5 +11,6 @@ public record InvoiceDTO(
         String zoneName,
         BigDecimal amount,
         InvoiceStatus status,
+        InvoiceType invoiceType,
         LocalDateTime createdAt
 ) {}

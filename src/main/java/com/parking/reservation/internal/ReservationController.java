@@ -38,7 +38,7 @@ class ReservationController {
     ReservationDTO create(@RequestBody @Valid CreateReservationRequest req, Authentication auth) {
         UUID citizenId = (UUID) auth.getPrincipal();
         return reservationService.createReservation(req.spaceId(), citizenId,
-                req.startTime(), req.endTime(), req.withCharging());
+                req.startTime(), req.endTime(), req.withCharging(), req.licensePlate());
     }
 
     @GetMapping("/reservations/{id}")
@@ -94,6 +94,7 @@ class ReservationController {
             @NotNull UUID spaceId,
             @NotNull LocalDateTime startTime,
             @NotNull LocalDateTime endTime,
-            boolean withCharging
+            boolean withCharging,
+            String licensePlate
     ) {}
 }

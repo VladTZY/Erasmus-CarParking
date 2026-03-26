@@ -1,6 +1,7 @@
 package com.parking.billing.internal;
 
 import com.parking.billing.InvoiceStatus;
+import com.parking.billing.InvoiceType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -29,19 +30,24 @@ class Invoice {
     @Column(nullable = false)
     private InvoiceStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private InvoiceType invoiceType;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     protected Invoice() {}
 
     Invoice(UUID id, UUID reservationId, UUID citizenId, BigDecimal amount,
-            String description, InvoiceStatus status, LocalDateTime createdAt) {
+            String description, InvoiceStatus status, InvoiceType invoiceType, LocalDateTime createdAt) {
         this.id = id;
         this.reservationId = reservationId;
         this.citizenId = citizenId;
         this.amount = amount;
         this.description = description;
         this.status = status;
+        this.invoiceType = invoiceType;
         this.createdAt = createdAt;
     }
 
@@ -51,7 +57,9 @@ class Invoice {
     BigDecimal getAmount() { return amount; }
     String getDescription() { return description; }
     InvoiceStatus getStatus() { return status; }
+    InvoiceType getInvoiceType() { return invoiceType; }
     LocalDateTime getCreatedAt() { return createdAt; }
 
     void setStatus(InvoiceStatus status) { this.status = status; }
+    void setAmount(BigDecimal amount) { this.amount = amount; }
 }
