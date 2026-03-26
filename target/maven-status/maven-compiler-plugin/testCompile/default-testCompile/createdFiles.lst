@@ -1,1 +1,14 @@
+com/parking/e2e/FullReservationFlowTest.class
+com/parking/billing/BillingModuleTest.class
+com/parking/e2e/EVChargingFlowTest.class
+com/parking/e2e/CancellationFlowTest.class
 com/parking/ModularityTest.class
+com/parking/e2e/TestHelper.class
+com/parking/zonemgmt/ZoneMgmtModuleTest.class
+com/parking/e2e/ConcurrentReservationTest.class
+com/parking/notification/NotificationModuleTest.class
+com/parking/charging/internal/ChargingModuleTest.class
+com/parking/reservation/ReservationModuleTest.class
+com/parking/pricing/PricingModuleTest.class
+com/parking/usermgmt/UserMgmtModuleTest.class
+com/parking/billing/internal/BillingChargingListenerTest.class

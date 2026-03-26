@@ -1,6 +1,5 @@
 package com.parking.zonemgmt.internal;
 
-import com.parking.reservation.IReservationAvailability;
 import com.parking.zonemgmt.*;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -62,6 +61,14 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
     }
 
     // ── ISpaceStateManager ────────────────────────────────────────────────────
+
+    @Override
+    @Transactional
+    public void lockSpace(UUID spaceId) {
+        repo.findSpaceByIdForUpdate(spaceId)
+                .orElseThrow(() -> new IllegalArgumentException("Space not found: " + spaceId));
+        // Lock acquired — no state change. Held until the caller's transaction commits.
+    }
 
     @Override
     @Transactional
@@ -173,7 +180,7 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
 
     @Transactional
     void changeSpaceState(UUID spaceId, ParkingSpace.SpaceState newState) {
-        var space = repo.findSpaceById(spaceId)
+        var space = repo.findSpaceByIdForUpdate(spaceId)
                 .orElseThrow(() -> new IllegalArgumentException("Space not found: " + spaceId));
         space.setState(newState);
         repo.saveSpace(space);

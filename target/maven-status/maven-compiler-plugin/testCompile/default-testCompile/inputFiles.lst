@@ -1,1 +1,14 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/ModularityTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/billing/BillingModuleTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/billing/internal/BillingChargingListenerTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/charging/internal/ChargingModuleTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/e2e/CancellationFlowTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/e2e/ConcurrentReservationTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/e2e/EVChargingFlowTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/e2e/FullReservationFlowTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/e2e/TestHelper.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/notification/NotificationModuleTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/pricing/PricingModuleTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/reservation/ReservationModuleTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/usermgmt/UserMgmtModuleTest.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/test/java/com/parking/zonemgmt/ZoneMgmtModuleTest.java

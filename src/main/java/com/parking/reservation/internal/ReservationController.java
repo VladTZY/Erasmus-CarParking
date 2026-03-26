@@ -36,7 +36,7 @@ class ReservationController {
     @PostMapping("/reservations")
     @ResponseStatus(HttpStatus.CREATED)
     ReservationDTO create(@RequestBody @Valid CreateReservationRequest req, Authentication auth) {
-        UUID citizenId = (UUID) auth.getPrincipal();
+        UUID citizenId = UUID.fromString(auth.getName());
         return reservationService.createReservation(req.spaceId(), citizenId,
                 req.startTime(), req.endTime(), req.withCharging(), req.licensePlate());
     }
@@ -53,14 +53,14 @@ class ReservationController {
 
     @GetMapping("/reservations/my")
     List<ReservationDTO> getMy(Authentication auth) {
-        UUID citizenId = (UUID) auth.getPrincipal();
+        UUID citizenId = UUID.fromString(auth.getName());
         return reservationService.getByCitizenId(citizenId);
     }
 
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void cancel(@PathVariable UUID id, Authentication auth) {
-        UUID userId = (UUID) auth.getPrincipal();
+        UUID userId = UUID.fromString(auth.getName());
         boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         // Admin can cancel any reservation — resolve the owner's citizenId so the service's
         // ownership check is satisfied without leaking admin-role logic into the service layer.

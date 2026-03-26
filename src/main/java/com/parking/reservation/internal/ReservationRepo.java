@@ -1,6 +1,6 @@
 package com.parking.reservation.internal;
 
-import com.parking.reservation.IReservationAvailability;
+import com.parking.zonemgmt.IReservationAvailability;
 import com.parking.reservation.IReservationRepo;
 import com.parking.reservation.ReservationDTO;
 import com.parking.reservation.ReservationStatus;

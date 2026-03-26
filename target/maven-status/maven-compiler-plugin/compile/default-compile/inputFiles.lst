@@ -4,6 +4,7 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/InvoiceDTO.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/InvoiceGeneratedEvent.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/InvoiceStatus.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/InvoiceType.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/internal/BillingController.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/internal/BillingService.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/internal/Invoice.java
@@ -11,6 +12,7 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/internal/InvoiceRepository.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/internal/MockPaymentGateway.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/billing/package-info.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/ChargingCompletedEvent.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/ChargingPlanDTO.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/ChargingSessionDTO.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/ChargingStartedEvent.java
@@ -23,6 +25,7 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/internal/ChargingSessionRepo.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/internal/ChargingStrategyService.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/internal/LprWebhookController.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/internal/OpenRouterService.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/internal/ReservationEventListener.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/charging/package-info.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/notification/INotificationRepo.java
@@ -47,7 +50,6 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/pricing/internal/PricingRuleJpaRepo.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/pricing/internal/PricingRuleService.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/pricing/package-info.java
-/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/IReservationAvailability.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/IReservationRepo.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/ReservationCancelledEvent.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/reservation/ReservationCreatedEvent.java
@@ -75,6 +77,7 @@
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/usermgmt/internal/UserRepository.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/usermgmt/internal/UserService.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/usermgmt/package-info.java
+/Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/IReservationAvailability.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/ISpaceQuery.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/ISpaceStateManager.java
 /Users/tiganilavlad/Documents/erasmus/parking/src/main/java/com/parking/zonemgmt/IZoneAvailability.java

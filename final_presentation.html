@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parking Application – Architecture Presentation</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      border-bottom: 1px solid #334155;
+      padding: 2.5rem 3rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      margin-top: 0.5rem;
+      color: #94a3b8;
+      font-size: 1.05rem;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.25rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: #1d4ed8;
+      color: #bfdbfe;
+      letter-spacing: 0.4px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* ── Section headings ──────────────────────────────────────── */
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #60a5fa;
+      margin-bottom: 0.35rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #1e3a5f;
+    }
+
+    .section-sub {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 1.8rem;
+    }
+
+    /* ── Overview cards ─────────────────────────────────────────── */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem;
+    }
+
+    .card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 0.3rem;
+    }
+
+    .card p {
+      font-size: 0.82rem;
+      color: #94a3b8;
+    }
+
+    /* ── Modules table ──────────────────────────────────────────── */
+    .modules-section {
+      margin-bottom: 3.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead th {
+      background: #1e3a5f;
+      color: #93c5fd;
+      font-weight: 600;
+      padding: 0.7rem 1rem;
+      text-align: left;
+    }
+
+    tbody tr:nth-child(odd)  { background: #1e293b; }
+    tbody tr:nth-child(even) { background: #162032; }
+
+    tbody td {
+      padding: 0.65rem 1rem;
+      color: #cbd5e1;
+      border-bottom: 1px solid #1e293b;
+      vertical-align: top;
+    }
+
+    tbody td:first-child {
+      font-weight: 600;
+      color: #7dd3fc;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.12rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin: 0.15rem 0.1rem 0 0;
+    }
+
+    .tag-event   { background: #1d4ed8; color: #bfdbfe; }
+    .tag-sync    { background: #065f46; color: #6ee7b7; }
+    .tag-persist { background: #7c3aed; color: #e9d5ff; }
+
+    /* ── C4 Diagram ─────────────────────────────────────────────── */
+    .diagram-section {
+      margin-bottom: 3.5rem;
+    }
+
+    .diagram-wrapper {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    }
+
+    .diagram-wrapper svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ── Interaction legend ─────────────────────────────────────── */
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .legend-item {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .dot-blue   { background: #3b82f6; }
+    .dot-green  { background: #10b981; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-purple { background: #8b5cf6; }
+
+    .legend-item h4 {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 0.2rem;
+    }
+
+    .legend-item p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    /* ── Tech stack ─────────────────────────────────────────────── */
+    .tech-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .tech-pill {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 999px;
+      padding: 0.35rem 1rem;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.8rem;
+      color: #475569;
+      border-top: 1px solid #1e293b;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Smart Parking Application</h1>
+  <p>Modular Spring Boot backend — architecture &amp; design overview</p>
+  <span class="badge">Spring Modulith · C4 Architecture</span>
+</header>
+
+<main>
+
+  <!-- ── Overview ─────────────────────────────────────────────── -->
+  <section style="margin-bottom:3rem;">
+    <h2 class="section-title">System Overview</h2>
+    <p class="section-sub">
+      A modular monolith implementing a city parking reservation platform.
+      Modules communicate through well-defined public APIs and Spring's
+      application-event bus — preventing direct cross-module coupling.
+    </p>
+
+    <div class="overview-grid">
+      <div class="card">
+        <div class="card-icon">🏗️</div>
+        <h3>Architecture Style</h3>
+        <p>Modular monolith with Spring Modulith — strict module boundaries enforced at test time.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <h3>7 Domain Modules</h3>
+        <p>Reservation, Billing, Charging, Notification, Pricing, User Management, Zone Management.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>Event-Driven</h3>
+        <p>Cross-module side-effects via <code>@ApplicationModuleListener</code> — async, after-commit.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3>Concurrency Safe</h3>
+        <p>Pessimistic DB locks (SELECT FOR UPDATE) prevent double-booking under concurrent load.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧪</div>
+        <h3>Fully Tested</h3>
+        <p>Unit, module-level, and end-to-end tests — including concurrent reservation stress tests.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3>REST API</h3>
+        <p>JWT-secured endpoints — role-based access for ADMIN and CITIZEN personas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Modules ──────────────────────────────────────────────── -->
+  <section class="modules-section">
+    <h2 class="section-title">Module Responsibilities</h2>
+    <p class="section-sub">Each module owns its data, its public API interfaces, and its event contracts.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>Responsibility</th>
+          <th>Communication</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Reservation</td>
+          <td>Create / cancel time-slot bookings; search available spaces; prevent double-booking via pessimistic lock.</td>
+          <td>
+            <span class="tag tag-event">publishes ReservationCreatedEvent</span>
+            <span class="tag tag-event">publishes ReservationCancelledEvent</span>
+            <span class="tag tag-sync">uses Pricing</span>
+            <span class="tag tag-sync">uses ZoneManagement</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Billing</td>
+          <td>Generate and settle invoices for reservations and EV charging sessions.</td>
+          <td>
+            <span class="tag tag-event">listens to ReservationCreatedEvent</span>
+            <span class="tag tag-event">listens to ChargingCompletedEvent</span>
+            <span class="tag tag-event">publishes InvoiceGeneratedEvent</span>
+            <span class="tag tag-sync">uses Pricing</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Charging</td>
+          <td>Manage EV charging sessions (start / stop); integrate with reservation lifecycle.</td>
+          <td>
+            <span class="tag tag-event">listens to ReservationCancelledEvent</span>
+            <span class="tag tag-event">publishes ChargingStartedEvent</span>
+            <span class="tag tag-event">publishes ChargingCompletedEvent</span>
+            <span class="tag tag-sync">uses Reservation</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Notification</td>
+          <td>Persist user notifications for all relevant domain events.</td>
+          <td>
+            <span class="tag tag-event">listens to ReservationCreatedEvent</span>
+            <span class="tag tag-event">listens to ReservationCancelledEvent</span>
+            <span class="tag tag-event">listens to InvoiceGeneratedEvent</span>
+            <span class="tag tag-event">listens to UserRegisteredEvent</span>
+            <span class="tag tag-event">listens to ZoneCreatedEvent</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Pricing</td>
+          <td>Provide per-zone, per-space-type pricing rules and fee estimates.</td>
+          <td>
+            <span class="tag tag-sync">uses ZoneManagement</span>
+          </td>
+        </tr>
+        <tr>
+          <td>User Management</td>
+          <td>Register users, issue JWT tokens, enforce role-based access control.</td>
+          <td>
+            <span class="tag tag-event">publishes UserRegisteredEvent</span>
+            <span class="tag tag-persist">owns User aggregate</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Zone Management</td>
+          <td>Manage parking zones and spaces; track physical occupancy state.</td>
+          <td>
+            <span class="tag tag-event">publishes ZoneCreatedEvent</span>
+            <span class="tag tag-persist">owns Zone &amp; Space aggregates</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── C4 Diagram ───────────────────────────────────────────── -->
+  <section class="diagram-section">
+    <h2 class="section-title">C4 Component Diagram</h2>
+    <p class="section-sub">
+      Auto-generated by Spring Modulith's <code>Documenter</code> from the live application context.
+      Arrows show direct API calls (<em>uses</em>) and event subscriptions (<em>listens to</em>).
+    </p>
+
+    <div class="diagram-wrapper">
+      <?xml version="1.0" encoding="UTF-8"?>
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="DESCRIPTION" height="909px" preserveAspectRatio="none" style="width:502px;height:909px;background:#FFFFFF;" version="1.1" viewBox="0 0 502 909" width="502px" zoomAndPan="magnify"><title>ParkingApplication</title><defs/><g><g class="title" data-source-line="2"><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="137.0332" x="175.6698" y="23.5352">ParkingApplication</text></g><!--cluster ParkingApplication.ParkingApplication_boundary--><g class="cluster" data-qualified-name="ParkingApplication.ParkingApplication_boundary" data-source-line="1666" id="ent0002"><rect fill="none" height="764.86" style="stroke:#444444;stroke-width:1;stroke-dasharray:7,7;" width="468" x="7" y="44.4883"/><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="156.6094" x="162.6953" y="61.957">ParkingApplication</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="67.0137" x="207.4932" y="76.9336">[container]</text></g><!--entity ParkingApplication.ParkingApplication.Billing--><g class="entity" data-qualified-name="ParkingApplication.ParkingApplication_boundary.ParkingApplication.ParkingApplication.Billing" data-source-line="78" id="ent0003"><rect fill="#85BBF0" height="52.9766" style="stroke:#78A8D8;stroke-width:0.5;" width="71.9531" x="110.02" y="224.4683"/><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="51.9531" x="120.02" y="249.937">Billing</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="50.666" x="120.6636" y="264.9136">[Module]</text></g><!--entity ParkingApplication.ParkingApplication.Charging--><g class="entity" data-qualified-name="ParkingApplication.ParkingApplication_boundary.ParkingApplication.ParkingApplication.Charging" data-source-line="78" id="ent0004"><rect fill="#85BBF0" height="52.9766" style="stroke:#78A8D8;stroke-width:0.5;" width="95.4063" x="23.3" y="353.4383"/><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="75.4063" x="33.3" y="378.907">Charging</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="50.666" x="45.6701" y="393.8836">[Module]</text></g><!--entity ParkingApplication.ParkingApplication.Notification--><g class="entity" data-qualified-name="ParkingApplication.ParkingApplication_boundary.ParkingApplication.ParkingApplication.Notification" data-source-line="78" id="ent0005"><rect fill="#85BBF0" height="52.9766" style="stroke:#78A8D8;stroke-width:0.5;" width="116.375" x="199.81" y="95.4883"/><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="96.375" x="209.81" y="120.957">Notification</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="50.666" x="232.6645" y="135.9336">[Module]</text></g><!--entity ParkingApplication.ParkingApplication.Pricing--><g class="entity" data-qualified-name="ParkingApplication.ParkingApplication_boundary.ParkingApplication.ParkingApplication.Pricing" data-source-line="78" id="ent0006"><rect fill="#85BBF0" height="52.9766" style="stroke:#78A8D8;stroke-width:0.5;" width="77.0703" x="284.46" y="611.3983"/><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="57.0703" x="294.46" y="636.867">Pricing</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="50.666" x="297.6621" y="651.8436">[Module]</text></g><!--entity ParkingApplication.ParkingApplication.Reservation--><g class="entity" data-qualified-name="ParkingApplication.ParkingApplication_boundary.ParkingApplication.ParkingApplication.Reservation" data-source-line="78" id="ent0007"><rect fill="#85BBF0" height="52.9766" style="stroke:#78A8D8;stroke-width:0.5;" width="117.4219" x="169.29" y="482.4183"/><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="97.4219" x="179.29" y="507.887">Reservation</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="50.666" x="202.6679" y="522.8636">[Module]</text></g><!--entity ParkingApplication.ParkingApplication.UserManagement--><g class="entity" data-qualified-name="ParkingApplication.ParkingApplication_boundary.ParkingApplication.ParkingApplication.UserManagement" data-source-line="78" id="ent0008"><rect fill="#85BBF0" height="52.9766" style="stroke:#78A8D8;stroke-width:0.5;" width="168.4063" x="253.8" y="224.4683"/><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="37.4766" x="263.8" y="249.937">User</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.2734" x="301.2766" y="249.937">&#160;</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="105.6563" x="306.55" y="249.937">Management</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="50.666" x="312.6701" y="264.9136">[Module]</text></g><!--entity ParkingApplication.ParkingApplication.ZoneManagement--><g class="entity" data-qualified-name="ParkingApplication.ParkingApplication_boundary.ParkingApplication.ParkingApplication.ZoneManagement" data-source-line="78" id="ent0009"><rect fill="#85BBF0" height="52.9766" style="stroke:#78A8D8;stroke-width:0.5;" width="171.3438" x="170.33" y="740.3683"/><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="40.4141" x="180.33" y="765.837">Zone</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.2734" x="220.7441" y="765.837">&#160;</text><text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="105.6563" x="226.0175" y="765.837">Management</text><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="50.666" x="230.6689" y="780.8136">[Module]</text></g><!--link ParkingApplication.ParkingApplication.Reservation to ParkingApplication.ParkingApplication.ZoneManagement--><g class="link" data-entity-1="ent0007" data-entity-2="ent0009" data-link-type="dependency" data-source-line="1779" id="lnk10"><path d="M228.5,535.6883 C229.33,566.4283 231.49,619.3083 237,664.3683 C240.18,690.3483 244.2476,711.8829 248.5876,732.3129" fill="none" id="ParkingApplication.ParkingApplication.Reservation-to-ParkingApplication.ParkingApplication.ZoneManagement" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="250.25,740.1383,251.5222,731.6895,245.6531,732.9363,250.25,740.1383" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28.4824" x="238" y="642.4898">uses</text></g><!--link ParkingApplication.ParkingApplication.Reservation to ParkingApplication.ParkingApplication.Pricing--><g class="link" data-entity-1="ent0007" data-entity-2="ent0006" data-link-type="dependency" data-source-line="1779" id="lnk11"><path d="M247.22,535.5983 C263.71,557.6283 282.5384,582.802 299.0084,604.822" fill="none" id="ParkingApplication.ParkingApplication.Reservation-to-ParkingApplication.ParkingApplication.Pricing" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="303.8,611.2283,301.4107,603.0251,296.606,606.6189,303.8,611.2283" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28.4824" x="282.19" y="577.9998">uses</text></g><!--link ParkingApplication.ParkingApplication.Pricing to ParkingApplication.ParkingApplication.ZoneManagement--><g class="link" data-entity-1="ent0006" data-entity-2="ent0009" data-link-type="dependency" data-source-line="1779" id="lnk12"><path d="M309.44,664.5783 C297.82,686.6083 284.895,711.1137 273.275,733.1237" fill="none" id="ParkingApplication.ParkingApplication.Pricing-to-ParkingApplication.ParkingApplication.ZoneManagement" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="269.54,740.1983,275.928,734.5243,270.622,731.7231,269.54,740.1983" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28.4824" x="294.51" y="706.9698">uses</text></g><!--link ParkingApplication.ParkingApplication.Charging to ParkingApplication.ParkingApplication.Reservation--><g class="link" data-entity-1="ent0004" data-entity-2="ent0007" data-link-type="dependency" data-source-line="1779" id="lnk13"><path d="M102.77,406.6283 C129.92,428.5783 162.5692,454.9882 189.7892,476.9982" fill="none" id="ParkingApplication.ParkingApplication.Charging-to-ParkingApplication.ParkingApplication.Reservation" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="196.01,482.0283,191.6755,474.6654,187.9029,479.331,196.01,482.0283" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="41.1504" x="159.9" y="449.0198">listens</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="3.9551" x="201.0504" y="449.0198">&#160;</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="12.5273" x="205.0055" y="449.0198">to</text></g><!--link ParkingApplication.ParkingApplication.Charging to ParkingApplication.ParkingApplication.Reservation (uses)--><g class="link" data-entity-1="ent0004" data-entity-2="ent0007" data-link-type="dependency" data-source-line="1779" id="lnk14"><path d="M77.13,406.7783 C81.8,421.7083 89.6,439.9483 102,452.4183 C120.29,470.8083 138.2091,480.7969 161.4291,489.4069" fill="none" id="ParkingApplication.ParkingApplication.Charging-to-ParkingApplication.ParkingApplication.Reservation-1" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="168.93,492.1883,162.4721,486.5941,160.3861,492.2198,168.93,492.1883" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28.4824" x="103" y="449.0198">uses</text></g><!--link ParkingApplication.ParkingApplication.Charging to ParkingApplication.ParkingApplication.ZoneManagement--><g class="link" data-entity-1="ent0004" data-entity-2="ent0009" data-link-type="dependency" data-source-line="1779" id="lnk15"><path d="M72.74,406.5983 C74.22,420.4583 76.96,437.6883 82,452.4183 C121.2,566.9483 196.6815,681.825 232.9015,733.555" fill="none" id="ParkingApplication.ParkingApplication.Charging-to-ParkingApplication.ParkingApplication.ZoneManagement" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="237.49,740.1083,235.359,731.8343,230.444,735.2756,237.49,740.1083" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28.4824" x="139.8" y="577.9998">uses</text></g><!--link ParkingApplication.ParkingApplication.Billing to ParkingApplication.ParkingApplication.Reservation (listens)--><g class="link" data-entity-1="ent0003" data-entity-2="ent0007" data-link-type="dependency" data-source-line="1779" id="lnk16"><path d="M163.45,277.8383 C169.16,286.9583 175.26,297.4383 180,307.4383 C186.5,321.1583 222.15,421.5083 225,436.4183 C227.87,451.4283 228.635,460.5184 228.695,474.2184" fill="none" id="ParkingApplication.ParkingApplication.Billing-to-ParkingApplication.ParkingApplication.Reservation" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="228.73,482.2183,231.6949,474.2052,225.695,474.2315,228.73,482.2183" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="41.1504" x="216.81" y="384.5298">listens</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="3.9551" x="257.9604" y="384.5298">&#160;</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="12.5273" x="261.9155" y="384.5298">to</text></g><!--link ParkingApplication.ParkingApplication.Billing to ParkingApplication.ParkingApplication.Reservation (uses)--><g class="link" data-entity-1="ent0003" data-entity-2="ent0007" data-link-type="dependency" data-source-line="1779" id="lnk18"><path d="M182.45,268.0383 C214.49,284.3983 259.03,313.0883 279,353.4383 C300.35,396.5983 275.2645,444.2603 253.0345,475.6403" fill="none" id="ParkingApplication.ParkingApplication.Billing-to-ParkingApplication.ParkingApplication.Reservation-1" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="248.41,482.1683,255.4825,477.3745,250.5865,473.9061,248.41,482.1683" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28.4824" x="287.36" y="384.5298">uses</text></g><!--link ParkingApplication.ParkingApplication.Billing to ParkingApplication.ParkingApplication.Charging--><g class="link" data-entity-1="ent0003" data-entity-2="ent0004" data-link-type="dependency" data-source-line="1779" id="lnk17"><path d="M130.82,277.6483 C117.81,299.6783 103.2308,324.3714 90.2208,346.3814" fill="none" id="ParkingApplication.ParkingApplication.Billing-to-ParkingApplication.ParkingApplication.Charging" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="86.15,353.2683,92.8034,347.908,87.6382,344.8549,86.15,353.2683" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="41.1504" x="113.99" y="320.0398">listens</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="3.9551" x="155.1404" y="320.0398">&#160;</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="12.5273" x="159.0955" y="320.0398">to</text></g><!--link ParkingApplication.ParkingApplication.Billing to ParkingApplication.ParkingApplication.Pricing--><g class="link" data-entity-1="ent0003" data-entity-2="ent0006" data-link-type="dependency" data-source-line="1779" id="lnk19"><path d="M182.29,266.9783 C230.04,287.6383 309.64,325.4283 324,353.4383 C329.81,364.7683 325.7869,535.1012 323.9469,602.9512" fill="none" id="ParkingApplication.ParkingApplication.Billing-to-ParkingApplication.ParkingApplication.Pricing" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="323.73,610.9483,326.9458,603.0325,320.948,602.8699,323.73,610.9483" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="28.4824" x="327.91" y="449.0198">uses</text></g><!--link ParkingApplication.ParkingApplication.Notification to ParkingApplication.ParkingApplication.Billing--><g class="link" data-entity-1="ent0005" data-entity-2="ent0003" data-link-type="dependency" data-source-line="1779" id="lnk20"><path d="M199.36,139.9883 C180.47,148.4483 161.48,160.7883 150,178.4683 C141.33,191.8083 139.6883,201.7041 140.8583,216.2441" fill="none" id="ParkingApplication.ParkingApplication.Notification-to-ParkingApplication.ParkingApplication.Billing" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="141.5,224.2183,143.8487,216.0034,137.868,216.4847,141.5,224.2183" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="41.1504" x="151" y="191.0698">listens</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="3.9551" x="192.1504" y="191.0698">&#160;</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="12.5273" x="196.1055" y="191.0698">to</text></g><!--link ParkingApplication.ParkingApplication.Notification to ParkingApplication.ParkingApplication.UserManagement--><g class="link" data-entity-1="ent0005" data-entity-2="ent0008" data-link-type="dependency" data-source-line="1779" id="lnk21"><path d="M274.19,148.6683 C288.07,170.6983 303.6963,195.5092 317.5663,217.5292" fill="none" id="ParkingApplication.ParkingApplication.Notification-to-ParkingApplication.ParkingApplication.UserManagement" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="321.83,224.2983,320.1047,215.9303,315.0279,219.1281,321.83,224.2983" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="41.1504" x="303.79" y="191.0698">listens</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="3.9551" x="344.9404" y="191.0698">&#160;</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="12.5273" x="348.8955" y="191.0698">to</text></g><!--link ParkingApplication.ParkingApplication.Notification to ParkingApplication.ParkingApplication.Reservation--><g class="link" data-entity-1="ent0005" data-entity-2="ent0007" data-link-type="dependency" data-source-line="1779" id="lnk22"><path d="M243.77,148.9183 C227.63,182.2483 207.07,240.2383 236,277.4383 C269.22,320.1583 320.78,264.7283 354,307.4383 C393.55,358.3083 389.2,398.4483 354,452.4183 C338.98,475.4383 319.66,486.5736 294.53,494.4936" fill="none" id="ParkingApplication.ParkingApplication.Notification-to-ParkingApplication.ParkingApplication.Reservation" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="286.9,496.8983,295.4318,497.3549,293.6283,491.6323,286.9,496.8983" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="41.1504" x="365.56" y="320.0398">listens</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="3.9551" x="406.7104" y="320.0398">&#160;</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="12.5273" x="410.6655" y="320.0398">to</text></g><!--link ParkingApplication.ParkingApplication.Notification to ParkingApplication.ParkingApplication.ZoneManagement--><g class="link" data-entity-1="ent0005" data-entity-2="ent0009" data-link-type="dependency" data-source-line="1779" id="lnk23"><path d="M316.49,137.4883 C359.63,151.6883 415.01,178.1383 440,224.4683 C451.18,245.1883 441.84,253.9683 440,277.4383 C426.4,450.9983 458.81,509.6483 379,664.3683 C362.37,696.5983 337.2672,718.0732 310.1672,735.6032" fill="none" id="ParkingApplication.ParkingApplication.Notification-to-ParkingApplication.ParkingApplication.ZoneManagement" style="stroke:#666666;stroke-width:1;"/><polygon fill="#666666" points="303.45,739.9483,311.7966,738.1221,308.5378,733.0843,303.45,739.9483" style="stroke:#666666;stroke-width:1;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="41.1504" x="436.74" y="449.0198">listens</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="3.9551" x="477.8904" y="449.0198">&#160;</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="12.5273" x="481.8455" y="449.0198">to</text></g><g class="legend" data-source-line="1576"><rect fill="none" height="16.4883" style="stroke:none;stroke-width:1;" width="163.0713" x="308.3015" y="833.3483"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="52.2539" x="308.3015" y="846.8834">Legend</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4297" x="365.1697" y="846.8834">&#160;</text><rect fill="#85BBF0" height="16.4883" style="stroke:none;stroke-width:1;" width="163.0713" x="308.3015" y="849.8366"/><text fill="#78A8D8" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="8.4287" x="312.7312" y="863.3717">&#9647;</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4297" x="321.1599" y="863.3717">&#160;</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76.665" x="330.0193" y="863.3717">component</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4297" x="411.114" y="863.3717">&#160;</text><rect fill="none" height="16.4883" style="stroke:none;stroke-width:1;" width="163.0713" x="308.3015" y="866.3248"/><text fill="#444444" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="8.4287" x="312.7312" y="879.86">&#9647;</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4297" x="321.1599" y="879.86">&#160;</text><text fill="#444444" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="132.4941" x="330.0193" y="879.86">container boundary</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4297" x="466.9431" y="879.86">&#160;</text><line style="stroke:none;stroke-width:1;" x1="308.3015" x2="471.3728" y1="833.3483" y2="833.3483"/><line style="stroke:none;stroke-width:1;" x1="308.3015" x2="471.3728" y1="849.8366" y2="849.8366"/><line style="stroke:none;stroke-width:1;" x1="308.3015" x2="471.3728" y1="866.3248" y2="866.3248"/><line style="stroke:none;stroke-width:1;" x1="308.3015" x2="471.3728" y1="882.8131" y2="882.8131"/><line style="stroke:none;stroke-width:1;" x1="308.3015" x2="308.3015" y1="833.3483" y2="882.8131"/><line style="stroke:none;stroke-width:1;" x1="471.3728" x2="471.3728" y1="833.3483" y2="882.8131"/></g></g></svg>
+    </div>
+  </section>
+
+  <!-- ── Interaction legend ────────────────────────────────────── -->
+  <section style="margin-bottom:3rem;">
+    <h2 class="section-title">Interaction Patterns</h2>
+    <p class="section-sub">Two distinct coupling modes keep modules independent.</p>
+
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-dot dot-blue"></div>
+        <div>
+          <h4>Direct API Call (uses)</h4>
+          <p>Synchronous in-process call through a module's public interface (e.g. <code>IPricingPolicy</code>, <code>ISpaceQuery</code>). The caller depends on the interface, not the implementation.</p>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot dot-green"></div>
+        <div>
+          <h4>Event Subscription (listens to)</h4>
+          <p>Async <code>@ApplicationModuleListener</code> — fires after the publishing transaction commits in a new transaction. No direct compile-time dependency from publisher to subscriber.</p>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot dot-yellow"></div>
+        <div>
+          <h4>Pessimistic Locking</h4>
+          <p><code>SELECT FOR UPDATE</code> on the space row serializes concurrent reservation requests — exactly one thread wins the lock and proceeds; others receive HTTP 409 Conflict.</p>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot dot-purple"></div>
+        <div>
+          <h4>Physical vs. Logical State</h4>
+          <p>Space state (FREE / RESERVED / OCCUPIED) tracks physical presence only. Time-slot availability is computed on-demand via overlap queries — never persisted as state.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Tech stack ───────────────────────────────────────────── -->
+  <section>
+    <h2 class="section-title">Technology Stack</h2>
+    <p class="section-sub">Production dependencies used in this project.</p>
+    <div class="tech-grid">
+      <span class="tech-pill">Java 21</span>
+      <span class="tech-pill">Spring Boot 3</span>
+      <span class="tech-pill">Spring Modulith</span>
+      <span class="tech-pill">Spring Data JPA</span>
+      <span class="tech-pill">Spring Security (JWT)</span>
+      <span class="tech-pill">H2 (in-memory)</span>
+      <span class="tech-pill">JUnit 5</span>
+      <span class="tech-pill">Awaitility</span>
+      <span class="tech-pill">MockMvc</span>
+      <span class="tech-pill">PlantUML C4</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  C4 diagram generated by Spring Modulith <code>Documenter.writeModulesAsPlantUml()</code> &mdash; 2026
+</footer>
+
+</body>
+</html>

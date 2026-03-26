@@ -39,6 +39,11 @@ class ParkingZoneRepo implements IParkingZoneRepo {
     }
 
     @Override
+    public Optional<ParkingSpace> findSpaceByIdForUpdate(UUID id) {
+        return spaceJpa.findByIdForUpdate(id);
+    }
+
+    @Override
     public List<ParkingSpace> findAllSpaces() {
         return spaceJpa.findAll();
     }

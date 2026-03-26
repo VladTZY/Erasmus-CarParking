@@ -1,12 +1,13 @@
-package com.parking.reservation;
+package com.parking.zonemgmt;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Exported interface — allows the ZoneMgmt module to check whether a space
- * has any conflicting reservations in a given time window, without depending
- * on internal reservation classes.
+ * Exported interface — owned by the ZoneMgmt module.
+ * Implemented by the Reservation module to allow the ZoneMgmt module to check
+ * whether a space has any conflicting reservations in a given time window,
+ * without creating a reverse dependency.
  */
 public interface IReservationAvailability {
     /**

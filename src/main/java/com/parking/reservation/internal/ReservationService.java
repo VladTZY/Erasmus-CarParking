@@ -59,6 +59,9 @@ class ReservationService {
     ReservationDTO createReservation(UUID spaceId, UUID citizenId, LocalDateTime startTime,
                                      LocalDateTime endTime, boolean withCharging, String licensePlate) {
         validateTimeRange(startTime, endTime);
+        // Acquire a pessimistic write lock on the space row first — serializes concurrent requests
+        // for the same space and prevents double-booking races without changing the displayed state.
+        spaceStateManager.lockSpace(spaceId);
         if (repo.hasOverlap(spaceId, startTime, endTime)) {
             throw new SpaceNotAvailableException(spaceId);
         }
@@ -99,8 +102,6 @@ class ReservationService {
 
         reservation.setStatus(ReservationStatus.CANCELLED);
         repo.save(reservation);
-
-        spaceStateManager.markFree(reservation.getSpaceId());
 
         eventPublisher.publishEvent(new ReservationCancelledEvent(
                 reservationId, reservation.getSpaceId(), reservation.getCitizenId()
