@@ -7,7 +7,7 @@ public record ParkingZoneDTO(
         UUID id,
         String name,
         String address,
-        int totalCapacity,
+        long totalCapacity,
         long availableCount,
         Double latitude,
         Double longitude,

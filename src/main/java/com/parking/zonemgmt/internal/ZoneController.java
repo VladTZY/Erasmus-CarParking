@@ -5,7 +5,6 @@ import com.parking.zonemgmt.ParkingZoneDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,13 +36,13 @@ class ZoneController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     ParkingZoneDTO createZone(@RequestBody @Valid ZoneRequest req) {
-        return zoneService.createZone(req.name(), req.address(), req.totalCapacity());
+        return zoneService.createZone(req.name(), req.address());
     }
 
     @PutMapping("/zones/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     ParkingZoneDTO updateZone(@PathVariable UUID id, @RequestBody @Valid ZoneRequest req) {
-        return zoneService.updateZone(id, req.name(), req.address(), req.totalCapacity());
+        return zoneService.updateZone(id, req.name(), req.address());
     }
 
     @DeleteMapping("/zones/{id}")
@@ -107,8 +106,7 @@ class ZoneController {
 
     record ZoneRequest(
             @NotBlank String name,
-            @NotBlank String address,
-            @Positive int totalCapacity
+            @NotBlank String address
     ) {}
 
     record SpaceCreateRequest(@NotBlank String name, @NotNull ParkingSpace.SpaceType type) {}

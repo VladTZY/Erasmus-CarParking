@@ -16,9 +16,6 @@ public class ParkingZone {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
-    private int totalCapacity;
-
     @Column
     private Double latitude;
 
@@ -30,24 +27,21 @@ public class ParkingZone {
 
     protected ParkingZone() {}
 
-    public ParkingZone(UUID id, String name, String address, int totalCapacity) {
+    public ParkingZone(UUID id, String name, String address) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.totalCapacity = totalCapacity;
     }
 
     public UUID getId() { return id; }
     public String getName() { return name; }
     public String getAddress() { return address; }
-    public int getTotalCapacity() { return totalCapacity; }
     public Double getLatitude() { return latitude; }
     public Double getLongitude() { return longitude; }
     public String getBoundary() { return boundary; }
 
     public void setName(String name) { this.name = name; }
     public void setAddress(String address) { this.address = address; }
-    public void setTotalCapacity(int totalCapacity) { this.totalCapacity = totalCapacity; }
     public void setLatitude(Double latitude) { this.latitude = latitude; }
     public void setLongitude(Double longitude) { this.longitude = longitude; }
     public void setBoundary(String boundary) { this.boundary = boundary; }

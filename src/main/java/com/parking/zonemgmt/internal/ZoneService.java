@@ -104,18 +104,17 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
     }
 
     @Transactional
-    ParkingZoneDTO createZone(String name, String address, int totalCapacity) {
-        var zone = new ParkingZone(UUID.randomUUID(), name, address, totalCapacity);
+    ParkingZoneDTO createZone(String name, String address) {
+        var zone = new ParkingZone(UUID.randomUUID(), name, address);
         return toDTO(repo.saveZone(zone));
     }
 
     @Transactional
-    ParkingZoneDTO updateZone(UUID id, String name, String address, int totalCapacity) {
+    ParkingZoneDTO updateZone(UUID id, String name, String address) {
         var zone = repo.findZoneById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Zone not found: " + id));
         zone.setName(name);
         zone.setAddress(address);
-        zone.setTotalCapacity(totalCapacity);
         return toDTO(repo.saveZone(zone));
     }
 
@@ -183,11 +182,13 @@ class ZoneService implements IZoneAvailability, ISpaceQuery, ISpaceStateManager,
     // ── Mapping ───────────────────────────────────────────────────────────────
 
     private ParkingZoneDTO toDTO(ParkingZone zone) {
-        long available = repo.findSpacesByZoneId(zone.getId()).stream()
+        List<ParkingSpace> spaces = repo.findSpacesByZoneId(zone.getId());
+        long total = spaces.size();
+        long available = spaces.stream()
                 .filter(s -> s.getState() == ParkingSpace.SpaceState.FREE)
                 .count();
         return new ParkingZoneDTO(
-                zone.getId(), zone.getName(), zone.getAddress(), zone.getTotalCapacity(), available,
+                zone.getId(), zone.getName(), zone.getAddress(), total, available,
                 zone.getLatitude(), zone.getLongitude(), zone.getBoundary()
         );
     }
